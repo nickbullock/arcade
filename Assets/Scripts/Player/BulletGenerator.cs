@@ -10,8 +10,9 @@ namespace Invector.CharacterController
     public class BulletGenerator : MonoBehaviour
     {
         public GameObject bulletPrefab;
-        public GameObject fireParticlePrefab;
+        public GameObject hitPlayerPrefab;
         public Transform bulletSpawn;
+        public float shotSpread = 0.08f;
         
         public float bulletSpeed;
         public float fireRate;
@@ -35,6 +36,15 @@ namespace Invector.CharacterController
         protected void Update()
         {
             Debug.DrawRay(bulletSpawn.position, gameObject.transform.forward * 10, Color.red);
+        }
+
+        Vector3 SprayDirection()
+        {
+            float vx = (1 - 2 * UnityEngine.Random.value) * shotSpread;
+            float vy = (1 - 2 * UnityEngine.Random.value) * shotSpread;
+            float vz = 1.0f;
+            
+            return transform.TransformDirection(new Vector3(vx, vy, vz));
         }
 
         public void Generate()
@@ -61,15 +71,23 @@ namespace Invector.CharacterController
                 
                 timer = timer - fireRate;
 
-                bullet.GetComponent<Rigidbody>().velocity = gameObject.transform.forward * bulletSpeed;
+                bullet.GetComponent<Rigidbody>().velocity = SprayDirection() * bulletSpeed;
 
                 if (Physics.Raycast(shootRay, out shootHit, range, shootMask))
                 {
                     vThirdPersonController enemyController = shootHit.collider.GetComponent<vThirdPersonController>();
                     if (enemyController != null)
-                    {
+                    {   
                         Destroy(bullet, 0.1f);
+                       
                         enemyController.Damage(damage, shootHit.point);
+                        
+                        GameObject blood = (GameObject) Instantiate(
+                            hitPlayerPrefab,
+                            shootHit.point,
+                            rotation);
+                        
+                        Destroy(blood, 0.4f);
                     }
                 }
                 else

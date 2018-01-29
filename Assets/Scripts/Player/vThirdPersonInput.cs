@@ -79,7 +79,7 @@ namespace Invector.CharacterController
             ExitGameInput();
 //            CameraInput();
 
-            if (!cc.lockMovement)
+            if (!cc.lockMovement && !cc.isDead)
             {
                 MoveCharacter();
                 TurnCharacter();

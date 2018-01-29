@@ -107,6 +107,8 @@ namespace Invector.CharacterController
             isSprinting,
             isSliding;
 
+        public bool isDead;
+
         // action bools
         [HideInInspector]
         public bool

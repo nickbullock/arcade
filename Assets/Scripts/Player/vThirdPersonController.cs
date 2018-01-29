@@ -93,18 +93,21 @@ namespace Invector.CharacterController
 
             if (health <= 0)
             {
+               _rigidbody.AddForce(hitPoint * 100);
                Die();
             }
         }
 
         public virtual void Die()
         {
-            Debug.Log("DEAD");
+            if (!isDead)
+            {
+                isDead = true;
             
-            DisableRagdoll(false);
-            GetComponent<Animator>().enabled=false;
-//            Destroy(gameObject, 5);
-      
+                DisableRagdoll(false);
+                GetComponent<Animator>().enabled = false;
+                Destroy(gameObject, 5);
+            }
         }
 
         public virtual void Turn()
