@@ -48,16 +48,6 @@ namespace Invector.CharacterController
                     else
                         ControlSpeed(strafeSprintSpeed);
                 }
-                else if (!isStrafing)
-                {
-                    // free extra speed                
-                    if (speed <= 0.5f)
-                        ControlSpeed(freeWalkSpeed);
-                    else if (speed > 0.5 && speed <= 1f)
-                        ControlSpeed(freeRunningSpeed);
-                    else
-                        ControlSpeed(freeSprintSpeed);
-                }
             }
         }
     }

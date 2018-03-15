@@ -75,7 +75,7 @@ namespace Invector.CharacterController
 
                 if (Physics.Raycast(shootRay, out shootHit, range, shootMask))
                 {
-                    vThirdPersonController enemyController = shootHit.collider.GetComponent<vThirdPersonController>();
+                    vThirdPersonController enemyController = shootHit.collider.gameObject.GetComponent<vThirdPersonController>();
                     if (enemyController != null)
                     {   
                         Destroy(bullet, 0.1f);

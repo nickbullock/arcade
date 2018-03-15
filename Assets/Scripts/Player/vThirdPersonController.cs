@@ -1,16 +1,26 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 namespace Invector.CharacterController
 {
     public class vThirdPersonController : vThirdPersonAnimator
     {
-        protected virtual void Start()
+//        protected virtual void OnGUI()
+//        {
+//            if (isDead)
+//            {    
+//                GUIStyle centeredStyle = GUI.skin.GetStyle("Label");
+//                centeredStyle.alignment = TextAnchor.UpperCenter;
+//                GUI.Label(new Rect (Screen.width/2-50, Screen.height/2-25, 100, 50), gameObject.name + " lose!", centeredStyle);
+//            }
+//        }
+
+        public virtual IEnumerator RestartScene()
         {
-#if !UNITY_EDITOR
-                Cursor.visible = false;
-#endif
+            yield return new WaitForSeconds(1);
+            SceneManager.LoadScene("level 01");
         }
 
         public virtual void Sprint(bool value)
@@ -48,16 +58,25 @@ namespace Invector.CharacterController
                 weaponIKIsActive = true;
                 
                 pickUpItem.transform.parent = gameObject.transform;
+
+                WeaponMeta meta = GetComponentInChildren<WeaponMeta>();
+
+                if (meta != null)
+                {
+                    pickUpItem.transform.localPosition = meta.weaponOffset;
+                }
                 
-                pickUpItem.transform.localPosition = new Vector3(-0.2f, 1f, 1f);
                 pickUpItem.transform.rotation = gameObject.transform.rotation;
                 
                 Rigidbody itemRigidbody = pickUpItem.GetComponent<Rigidbody>();
                 BoxCollider itemCollider = pickUpItem.GetComponent<BoxCollider>();
 
-                itemRigidbody.useGravity = false;
-                itemRigidbody.isKinematic = true;
-                itemCollider.enabled = false;
+                if (itemRigidbody && itemCollider)
+                {
+                    itemRigidbody.useGravity = false;
+                    itemRigidbody.isKinematic = true;
+                    itemCollider.enabled = false;
+                }
             }
         }
 
@@ -69,13 +88,17 @@ namespace Invector.CharacterController
                 
                 Rigidbody itemRigidbody = pickUpItem.GetComponent<Rigidbody>();
                 BoxCollider itemCollider = pickUpItem.GetComponent<BoxCollider>();
-                
-                itemRigidbody.useGravity = true;
-                itemRigidbody.isKinematic = false;
-                itemCollider.enabled = true;
 
-                pickUpItem.transform.parent = null;
-                pickUpItem = null;
+
+                if (itemRigidbody && itemCollider)
+                {
+                    itemRigidbody.useGravity = true;
+                    itemRigidbody.isKinematic = false;
+                    itemCollider.enabled = true;
+
+                    pickUpItem.transform.parent = null;
+                    pickUpItem = null;
+                }
             }
         }
 
@@ -83,7 +106,9 @@ namespace Invector.CharacterController
         {
             if (pickUpItem && pickUpItem.CompareTag("Weapon"))
             {
-                pickUpItem.GetComponent<BulletGenerator>().Generate();
+                var generator = pickUpItem.GetComponent<BulletGenerator>();
+                    
+                if(generator) generator.Generate();
             }
         }
 
@@ -94,7 +119,7 @@ namespace Invector.CharacterController
             if (health <= 0)
             {
                _rigidbody.AddForce(hitPoint * 100);
-               Die();
+                Die();
             }
         }
 
@@ -111,9 +136,7 @@ namespace Invector.CharacterController
         }
 
         public virtual void Turn()
-        {
-#if !MOBILE_INPUT
-            // Create a ray from the mouse cursor on screen in the direction of the camera.
+        {   
             Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             Debug.DrawRay(camRay.origin, camRay.direction * 10, Color.green);
@@ -133,26 +156,6 @@ namespace Invector.CharacterController
                 // Set the player's rotation to this new rotation.
                 _rigidbody.rotation = Quaternion.LookRotation(playerToMouse);
             }
-#else
-
-            Vector3 turnDir =
-new Vector3(CrossPlatformInputManager.GetAxisRaw("Mouse X") , 0f , CrossPlatformInputManager.GetAxisRaw("Mouse Y"));
-
-            if (turnDir != Vector3.zero)
-            {
-                // Create a vector from the player to the point on the floor the raycast from the mouse hit.
-                Vector3 playerToMouse = (transform.position + turnDir) - transform.position;
-
-                // Ensure the vector is entirely along the floor plane.
-                playerToMouse.y = 0f;
-
-                // Create a quaternion (rotation) based on looking down the vector from the player to the mouse.
-                Quaternion newRotatation = Quaternion.LookRotation(playerToMouse);
-
-                // Set the player's rotation to this new rotation.
-                playerRigidbody.MoveRotation(newRotatation);
-            }
-#endif
         }
 
         public virtual void RotateWithAnotherTransform(Transform referenceTransform)

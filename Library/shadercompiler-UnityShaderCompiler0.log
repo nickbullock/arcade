@@ -1,2 +1,18 @@
 Base path: /Applications/Unity/Unity.app/Contents
 Cmd: initializeCompiler
+Cmd: compileComputeKernel
+  api=14 insize=1386 outsize=7473 ok=1
+Cmd: translateComputeKernel
+  api=14 insize=6493 outsize=1317 ok=1
+Cmd: compileComputeKernel
+  api=14 insize=3182 outsize=7925 ok=1
+Cmd: translateComputeKernel
+  api=14 insize=7105 outsize=3577 ok=1
+Cmd: translateComputeKernel
+  api=14 insize=6625 outsize=1561 ok=1
+Cmd: compileComputeKernel
+  api=14 insize=1484 outsize=7485 ok=1
+Cmd: translateComputeKernel
+  api=14 insize=873 outsize=909 ok=1
+Cmd: compileComputeKernel
+  api=14 insize=2285 outsize=7281 ok=1

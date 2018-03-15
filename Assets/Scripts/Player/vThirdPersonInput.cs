@@ -34,7 +34,8 @@ namespace Invector.CharacterController
         [HideInInspector]
         public bool keepDirection;                          // keep the current direction in case you change the cameraState
 
-        protected vThirdPersonController cc;                // access the ThirdPersonController component                
+        protected vThirdPersonController cc;                // access the ThirdPersonController component    
+        protected vThirdPersonCamera tpCamera;
 
         #endregion
 
@@ -49,27 +50,26 @@ namespace Invector.CharacterController
             if (cc != null)
                 cc.Init();
 
-//            tpCamera = FindObjectOfType<vThirdPersonCamera>();
-//            if (tpCamera) tpCamera.SetMainTarget(this.transform);
-//            Cursor.visible = false;
-//            Cursor.lockState = CursorLockMode.Locked;
+            tpCamera = FindObjectOfType<vThirdPersonCamera>();
+            if (tpCamera && ! tpCamera.target) tpCamera.SetMainTarget(this.transform);
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         protected virtual void LateUpdate()
         {
             if (cc == null) return;             // returns if didn't find the controller		    
             InputHandle();                      // update input methods
-//            UpdateCameraStates();               // update camera states
         }
 
         protected virtual void FixedUpdate()
         {
             cc.AirControl();
-//            CameraInput();
         }
 
         protected virtual void Update()
         {
+            if (transform.position.y < 0) StartCoroutine(cc.RestartScene());
             cc.UpdateMotor();                   // call ThirdPersonMotor methods               
             cc.UpdateAnimator();                // call ThirdPersonAnimator methods		               
         }
@@ -77,7 +77,7 @@ namespace Invector.CharacterController
         protected virtual void InputHandle()
         {
             ExitGameInput();
-//            CameraInput();
+            CameraInput();
 
             if (!cc.lockMovement && !cc.isDead)
             {
@@ -131,7 +131,6 @@ namespace Invector.CharacterController
         {
             if (Input.GetMouseButton(0))
             {
-                
                 cc.Fire();
             }
         }
@@ -164,48 +163,48 @@ namespace Invector.CharacterController
 
         #endregion
 
-//        #region Camera Methods
-//
-//        protected virtual void CameraInput()
-//        {
-//            if (tpCamera == null)
-//                return;
-//            var Y = Input.GetAxis(rotateCameraYInput);
-//            var X = Input.GetAxis(rotateCameraXInput);
-//
-//            tpCamera.RotateCamera(X, Y);
-//
-//            // tranform Character direction from camera if not KeepDirection
-//            if (!keepDirection)
-//                cc.UpdateTargetDirection(tpCamera != null ? tpCamera.transform : null);
-//            // rotate the character with the camera while strafing        
-//            RotateWithCamera(tpCamera != null ? tpCamera.transform : null);            
-//        }
-//
-//        protected virtual void UpdateCameraStates()
-//        {
-//            // CAMERA STATE - you can change the CameraState here, the bool means if you want lerp of not, make sure to use the same CameraState String that you named on TPCameraListData
-//            if (tpCamera == null)
-//            {
-//                tpCamera = FindObjectOfType<vThirdPersonCamera>();
-//                if (tpCamera == null)
-//                    return;
-//                if (tpCamera)
-//                {
-//                    tpCamera.SetMainTarget(this.transform);
-//                    tpCamera.Init();
-//                }
-//            }            
-//        }
-//
-//        protected virtual void RotateWithCamera(Transform cameraTransform)
-//        {
-//            if (cc.isStrafing && !cc.lockMovement && !cc.lockMovement)
-//            {                
-//                cc.RotateWithAnotherTransform(cameraTransform);                
-//            }
-//        }
-//
-//        #endregion     
+        #region Camera Methods
+
+        protected virtual void CameraInput()
+        {
+            if (tpCamera == null)
+                return;
+            var Y = Input.GetAxis(rotateCameraYInput);
+            var X = Input.GetAxis(rotateCameraXInput);
+
+            tpCamera.RotateCamera(X, Y);
+
+            // tranform Character direction from camera if not KeepDirection
+            if (!keepDirection)
+                cc.UpdateTargetDirection(tpCamera != null ? tpCamera.transform : null);
+            // rotate the character with the camera while strafing        
+            RotateWithCamera(tpCamera != null ? tpCamera.transform : null);            
+        }
+
+        protected virtual void UpdateCameraStates()
+        {
+            // CAMERA STATE - you can change the CameraState here, the bool means if you want lerp of not, make sure to use the same CameraState String that you named on TPCameraListData
+            if (tpCamera == null)
+            {
+                tpCamera = FindObjectOfType<vThirdPersonCamera>();
+                if (tpCamera == null)
+                    return;
+                if (tpCamera)
+                {
+                    tpCamera.SetMainTarget(this.transform);
+                    tpCamera.Init();
+                }
+            }            
+        }
+
+        protected virtual void RotateWithCamera(Transform cameraTransform)
+        {
+            if (cc.isStrafing && !cc.lockMovement && !cc.lockMovement)
+            {                
+                cc.RotateWithAnotherTransform(cameraTransform);                
+            }
+        }
+
+        #endregion     
     }
 }

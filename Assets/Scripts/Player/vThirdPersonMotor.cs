@@ -158,7 +158,7 @@ namespace Invector.CharacterController
         [HideInInspector]
         public float colliderHeight;                        // storage capsule collider extra information                
         [HideInInspector]
-        public Vector2 input;                               // generate input for the controller        
+        public Vector2 input;                               // generate input for the controller      
         [HideInInspector]
         public float speed, direction, verticalVelocity;    // general variables to the locomotion
         [HideInInspector]
