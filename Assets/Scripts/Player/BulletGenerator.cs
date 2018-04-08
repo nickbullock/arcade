@@ -49,10 +49,9 @@ namespace Invector.CharacterController
 
         public void Generate()
         {
-            timer = timer + 100 * Time.deltaTime;
-
-            if (bulletPrefab && bulletSpawn && timer > fireRate)
+            if (bulletPrefab && bulletSpawn && Time.time > fireRate + timer)
             {
+                timer = Time.time + fireRate;
                 shootRay.origin = bulletSpawn.position;
                 shootRay.direction = gameObject.transform.forward;
                 
@@ -68,8 +67,6 @@ namespace Invector.CharacterController
                     bulletPrefab,
                     bulletSpawn.position,
                     rotation);
-                
-                timer = timer - fireRate;
 
                 bullet.GetComponent<Rigidbody>().velocity = SprayDirection() * bulletSpeed;
 
@@ -94,6 +91,8 @@ namespace Invector.CharacterController
                 {
                     Destroy(bullet, 2.0f);
                 }
+
+                timer = Time.time;
             }
         }
     }

@@ -69,7 +69,7 @@ namespace Invector.CharacterController
 
         protected virtual void Update()
         {
-            if (transform.position.y < 0) StartCoroutine(cc.RestartScene());
+            if (transform.position.y < -5) StartCoroutine(cc.RestartScene());
             cc.UpdateMotor();                   // call ThirdPersonMotor methods               
             cc.UpdateAnimator();                // call ThirdPersonAnimator methods		               
         }

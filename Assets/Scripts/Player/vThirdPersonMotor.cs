@@ -398,6 +398,8 @@ namespace Invector.CharacterController
 
             // clear the checkground to free the character to attack on air                
             var onStep = StepOffset();
+            
+            Debug.Log(groundDistance + " " + groundCheckDistance);
 
             if (groundDistance <= 0.05f)
             {
